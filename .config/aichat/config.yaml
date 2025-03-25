@@ -1,0 +1,28 @@
+# see https://github.com/sigoden/aichat/blob/main/config.example.yaml
+
+# model: gemini:gemini-exp-1206
+model: gemini:gemini-2.0-flash-thinking-exp
+clients:
+  - type: cohere
+
+  - type: openai-compatible
+    name: mistral
+    api_base: https://api.mistral.ai/v1
+
+  - type: openai-compatible
+    name: groq
+    api_base: https://api.groq.com/openai/v1
+
+  - type: gemini
+    api-base: https://generativelanguage.googleapis.com/v1beta
+    patch:
+      chat_completions:
+        ".*":
+          body:
+            safetySettings:
+              - category: HARM_CATEGORY_HARASSMENT
+                threshold: BLOCK_NONE
+              - category: HARM_CATEGORY_HATE_SPEECH
+                threshold: BLOCK_NONE
+              - category: HARM_CATEGORY_DANGEROUS_CONTENT
+                threshold: BLOCK_NONE

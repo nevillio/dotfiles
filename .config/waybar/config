@@ -1,0 +1,149 @@
+//====================================================================================================//
+// Waybar Configuration File                                                                          //
+//----------------------------------------------------------------------------------------------------//
+// Purpose: Creates a minimalistic (yet functional) waybar at                                         //
+// the top of the screen.                                                                             //
+// themes and colors, set the wallpaper, and more.                                                    //
+//                                                                                                    //
+// License: Creative Commons Attribution 4.0 International                                            //
+//                                                                                                    //
+// Credit:                                                                                            //
+// Battery section adapted from:                                                                      //
+// https://github.com/Egosummiki/dotfiles/blob/master/waybar/config                                   //
+//                                                                                                    //
+// Pipewire audio adapted from:                                                                       //
+// https://www.reddit.com/r/swaywm/comments/sks343/pwvolume_pipewire_volume_control_and_waybar_module //
+//====================================================================================================//
+
+{
+	"layer": "top",
+		"position": "top",
+		"height": 30,
+		"spacing": 4,
+
+		// Choose the order of the modules
+		"modules-left": ["sway/workspaces", "sway/mode", "sway/scratchpad", "tray", "cpu", "temperature", "memory"],
+			"modules-center": [ "sway/window"],
+		"modules-right": ["wireplumber", "bluetooth", "network","network#vpn", "backlight", "battery", "clock"],
+
+		// Configuration for individual modules
+		"sway/workspaces": {
+			"disable-scroll": true,
+			"all-outputs": false,
+			"format": "{name}",
+			"format-icons": {
+				//"1": "",
+				//"2": "",
+				//"3": "",
+				//"4": "",
+				//"5": "",
+				"urgent": "",
+				"focused": "",
+				"default": ""
+			}
+		},
+		"sway/mode": {
+			"format": "<span style=\"italic\">{}</span>"
+		},
+		"sway/scratchpad": {
+			"format": "{icon} {count}",
+			"show-empty": false,
+			"format-icons": ["", ""],
+			"tooltip": true,
+			"tooltip-format": "{app}: {title}"
+		},
+
+		"cpu": {
+			"interval": 5,
+			"format": "<span color='#eb8a60'> {usage}% ({load})</span>",
+			"states": {
+				"warning": 70,
+				"critical": 90
+			},
+			"on-click": "hardinfo",
+			"format": "{usage}% ",
+			"tooltip": false
+		},
+
+		"memory": {
+			"interval": 30,
+			"format": "{}% ",
+			"max-length": 10
+		},
+
+		"tray": {
+			"icon-size": 18,
+			"spacing": 10,
+		},
+
+		"temperature": {
+			"format": "{temperatureC}°C {icon}",
+			"format-icons": ["", "", ""]
+		},
+
+		"backlight": {
+			"interval": 5,
+			// "device": "intel_backlight",
+			"format": "{icon} {percent}%",
+			"format-icons": ["", "", "", "", "", "", "", "", ""]
+		},
+
+		"bluetooth": {
+			"controller": "controller1", // specify the alias of the controller if there are more than 1 on the system
+			"format": " {status}",
+			"format-disabled": "", // an empty format will hide the module
+			"format-connected": " {device_alias} connected",
+			//"format-connected-battery": " {device_alias} {device_battery_percentage}%",
+			"format-connected-battery": " {device_battery_percentage}%",
+			"tooltip-format": "{controller_alias}\t{controller_address}",
+			"tooltip-format-connected": "{controller_alias}\t{controller_address}\n\n{device_enumerate}",
+			"tooltip-format-enumerate-connected": "{device_alias}\t{device_address}",
+			"tooltip-format-enumerate-connected-battery": "{device_alias}\t{device_address}\t{device_battery_percentage}%",
+		},
+
+		"clock": {
+			"timezone": "India/Chennai",
+			"tooltip-format": "<big>{:%Y %B}</big>\n<tt><small>{calendar}</small></tt>",
+			"format-alt": "{:%Y-%m-%d}",
+		},
+
+		"battery": {
+			"states": {
+				// "good": 95,
+				"warning": 30,
+				"critical": 15,
+			},
+			"format": "{icon} {capacity}%",
+			"format-charging": "⚡{capacity}%",
+			"format-plugged": " {capacity}%",
+			"format-alt": "{time} {icon}",
+			// "format-good": "", // An empty format will hide the module
+			// "format-full": "",
+			"format-icons": ["", "", "", "", ""],
+		},
+
+		"network": {
+			"interface": "wlp*", // (Optional) To force the use of this interface
+			"format-wifi": "{essid} ({signalStrength}%) ",
+			// "format-ethernet": "{ifname}: {ipaddr}/{cidr} 󰊗",
+			"tooltip-format": "{ipaddr}/{cidr} 󰊗",
+			// "format-linked": "{ifname} (No IP)",
+			"format-disconnected": "Disconnected ⚠",
+			"format-alt": "{ifname}: {ipaddr}/{cidr}",
+		},
+		"network#vpn": {
+			"interface": "tun0",
+			// generate an icon for a tunnel
+			"format": "👻",
+			"tooltip-format": "{ifname}: {ipaddr}/{cidr} 󰊗",
+			"format-disconnected": ""
+		},
+
+		"wireplumber": {
+			"format": "{volume}% {icon}",
+			"format-muted": "",
+			"on-click": "helvum",
+			"format-icons": ["", "", ""]
+		},
+
+}
