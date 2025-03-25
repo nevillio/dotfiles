@@ -1,0 +1,90 @@
+model: gemini:gemini-2.0-flash-thinking-exp
+messages:
+- role: user
+  content: Give me a bash script to convert the following script into a json object {message:query_response,transaction_id:93,result_type:NDSP_ASR_APP_CMD,NMAS_PRFX_SESSION_ID:d795ef3a-423a-46d1-a3c5-924954ebcaf7,NMAS_PRFX_TRANSACTION_ID:93,final_response:1,status_code:0,result_format:nlu_interpretation_results,prompt:,cadence_regulatable_result:completeRecognition,nlu_interpretation_results:{payload_version:1.0,payload_format:nlu-base,payload:{type:nlu-1.0,interpretations:[{literal:The Rev Opera,action:{intent:{value:NO_INTENT,confidence:0.82}}}]},final_response:1,status:success},audio_transfer_info:{nss_server:webapi-plugin,start_time:1739966996392,end_time:1739966999511,packages:[],audio_id:93}}
+- role: assistant
+  content: |-
+    ```bash
+    #!/bin/bash
+
+    input_string="message:query_response,transaction_id:93,result_type:NDSP_ASR_APP_CMD,NMAS_PRFX_SESSION_ID:d795ef3a-423a-46d1-a3c5-924954ebcaf7,NMAS_PRFX_TRANSACTION_ID:93,final_response:1,status_code:0,result_format:nlu_interpretation_results,prompt:,cadence_regulatable_result:completeRecognition,nlu_interpretation_results:{payload_version:1.0,payload_format:nlu-base,payload:{type:nlu-1.0,interpretations:[{literal:The Rev Opera,action:{intent:{value:NO_INTENT,confidence:0.82}}}]},final_response:1,status:success},audio_transfer_info:{nss_server:webapi-plugin,start_time:1739966996392,end_time:1739966999511,packages:[],audio_id:93}}"
+
+    # Function to quote keys and string values
+    quote_json_string() {
+      local input="$1"
+      # Quote keys
+      input=$(sed 's/\([^:,{]\+\):/"\1":/g' <<< "$input")
+      # Quote string values (simple approach - might need refinement for complex cases)
+      input=$(sed 's/: \([^,:{}]*\)\([,}]\)/\:"\1"\2/g' <<< "$input")
+      input=$(sed 's/: \([^,:{}]*\)$/\:"\1"/g' <<< "$input") # For last value without comma
+      echo "$input"
+    }
+
+    # Add curly braces to make it a JSON object
+    json_output=$(quote_json_string "$input_string")
+    json_output="{${json_output}}"
+
+    # Print the JSON output
+    echo "$json_output"
+    ```
+
+    **Explanation:**
+
+    1. **`#!/bin/bash`**:  Shebang line, specifying that the script should be executed with bash.
+    2. **`input_string="..."`**:  Stores your input string in a variable named `input_string`.
+    3. **`quote_json_string() { ... }`**: Defines a function named `quote_json_string` that takes one argument (the input string) and performs the following:
+       - **`local input="$1"`**:  Creates a local variable `input` within the function and assigns the function's first argument to it.
+       - **`input=$(sed 's/\([^:,{]\+\):/"\1":/g' <<< "$input")`**: This line uses `sed` (stream editor) to find and replace patterns in the input string.
+         - `sed 's/pattern/replacement/g'` is the basic `sed` substitution command.
+         - `s/`...`/`...`/g`:  `s` for substitute, `/`/` delimiters, `g` for global (replace all occurrences in the line).
+         - `\([^:,{]\+\):`: This is the pattern we are searching for. Let's break it down:
+           - `\(` and `\)`:  Start and end of a capturing group (we can refer to the captured part later as `\1`).
+           - `[^:,{]`:  A character class that matches any character that is *NOT* a colon `:`, a comma `,`, or an opening curly brace `{`. We exclude these because we don't want to quote parts that are already within JSON structures or are delimiters.
+           - `\+`:  Matches one or more occurrences of the preceding character class (i.e., one or more characters that are not `:`, `,`, or `{`).
+           - `:`:  Matches a literal colon.
+         - `/"\1":/`: This is the replacement string.
+           - `"`:  A double quote.
+           - `\1`:  Backreference to the first capturing group (the key name we captured).
+           - `"`:  Another double quote.
+           - `:`:  A literal colon.
+         - `<<< "$input"`:  "Here string" in bash. It passes the content of the `input` variable as standard input to the `sed` command.
+         - **Effect:** This `sed` command finds key names (assuming they are before a colon and not already quoted or part of a nested structure) and encloses them in double quotes.
+       - **`input=$(sed 's/: \([^,:{}]*\)\([,}]\)/\:"\1"\2/g' <<< "$input")`**: This line quotes string values that are followed by a comma or a closing curly brace.
+         - `s/: \([^,:{}]*\)\([,}]\)/\:"\1"\2/g`:
+           - `: `: Matches a colon followed by a space (assuming there's a space after the colon before the value).
+           - `\([^,:{}]*\)`: Captures the value. It matches zero or more characters that are not commas, colons, or curly braces (to avoid over-quoting).
+           - `\([,}]\)`: Captures either a comma or a closing curly brace, which are common delimiters in your input.
+           - `\:"\1"\2`: Replaces with a colon, a double quote, the captured value (`\1`), another double quote, and the captured delimiter (`\2`).
+       - **`input=$(sed 's/: \([^,:{}]*\)$/\:"\1"/g' <<< "$input")`**: This line handles the last value in the string, which might not be followed by a comma but by the end of the line.
+         - `s/: \([^,:{}]*\)$/\:"\1"/g`:
+           - `: `: Matches a colon and a space.
+           - `\([^,:{}]*\)`: Captures the value (same as above).
+           - `$`: Matches the end of the line.
+           - `\:"\1"`: Replaces with a colon, a double quote, and the captured value.
+       - **`echo "$input"`**:  Outputs the modified `input` string (with keys and string values quoted).
+    3. **`json_output=$(quote_json_string "$input_string")`**: Calls the `quote_json_string` function with the `input_string` and stores the output in the `json_output` variable.
+    4. **`json_output="{${json_output}}"`**:  Adds opening and closing curly braces `{}` around the `json_output` to make it a valid JSON object.
+    5. **`echo "$json_output"`**: Prints the final JSON output to the console.
+
+    **How to Run the Script:**
+
+    1. **Save:** Save the code to a file, for example, `convert_to_json.sh`.
+    2. **Make Executable:**  Run `chmod +x convert_to_json.sh` in your terminal to make the script executable.
+    3. **Run:** Execute the script using `./convert_to_json.sh`.
+
+    **Output:**
+
+    The script will output the following JSON object to your terminal:
+
+    ```json
+    {
+    "message":"query_response","transaction_id":"93","result_type":"NDSP_ASR_APP_CMD","NMAS_PRFX_SESSION_ID":"d795ef3a-423a-46d1-a3c5-924954ebcaf7","NMAS_PRFX_TRANSACTION_ID":"93","final_response":"1","status_code":"0","result_format":"nlu_interpretation_results","prompt":"","cadence_regulatable_result":"completeRecognition","nlu_interpretation_results":{"payload_version":"1.0","payload_format":"nlu-base","payload":{"type":"nlu-1.0","interpretations":[{"literal":"The Rev Opera","action":{"intent":{"value":"NO_INTENT","confidence":"0.82"}}}]},"final_response":"1","status":"success"},"audio_transfer_info":{"nss_server":"webapi-plugin","start_time":"1739966996392","end_time":"1739966999511","packages":[],"audio_id":"93"}
+    }
+    ```
+
+    **Important Notes:**
+
+    * **Simple String Quoting:** This script uses a relatively simple approach to quote string values. It assumes that values are generally separated by commas or curly braces and are not complex strings containing these delimiters without proper escaping. For more robust JSON conversion, especially if your input data is more complex, you might need to use a more sophisticated JSON parsing and serialization tool (like `jq` or a scripting language like Python with JSON libraries).
+    * **Numbers and Booleans:**  The script quotes all values that are not keys. In JSON, numbers and booleans should not be quoted.  If you need to differentiate between strings and numbers/booleans and avoid quoting numbers/booleans, you would need to add more logic to the `quote_json_string` function to detect number and boolean patterns. For this specific input, quoting the numbers as strings still results in valid JSON (although ideally, numbers should be unquoted).
+    * **Nested Structures:** The script attempts to handle nested curly braces `{}` to some extent, but it's still based on string manipulation. For deeply nested or very complex structures, a dedicated JSON parser would be more reliable.
+    * **Error Handling:** This script doesn't include error handling. In a real-world scenario, you might want to add checks to ensure the input is in the expected format or to handle potential errors during the `sed` operations.

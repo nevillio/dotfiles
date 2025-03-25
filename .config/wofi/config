@@ -1,0 +1,4 @@
+# Maintained in linux-config.org
+dynamic_lines=true
+term=kitty
+prompt="Search for apps "
