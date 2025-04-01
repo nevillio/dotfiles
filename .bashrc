@@ -116,13 +116,8 @@ if ! shopt -oq posix; then
     fi
 fi
 
-# # source imports
-# source ~/Projects/shell_scripting/exports.sh
-# # source the functions file
-# source ~/Projects/shell_scripting/util_functions.sh
-#
-# Set up fzf key bindings and fuzzy completion
-   source /usr/share/doc/fzf/examples/key-bindings.bash
+# source the functions file
+source ~/Projects/shell_scripting/util_functions.sh
 
 # set up starship
 eval "$(starship init bash)"
@@ -145,14 +140,6 @@ function get_bluetooth_config(){
   rg "$1=" $HOME/.config/bluetooth_devices | cut -d'=' -f2
 }
 
-function reconnect_network() {
-  if [ -z "$1" ]; then echo "No network provided"; return; fi
-  current_network=$(iwgetid -r)
+alias connect_bluetooth="bluetoothctl connect $(get_bluetooth_config 'NIRVANA_ION')"
 
-  if [ "$current_network" != "$1" ]; then {
-    echo "Connected to $current_network. Reconnecting to $1"
-    nmcli connection down "$current_network"
-    nmcli connection up "$1"
-  }
-  fi
-}
+[ -f ~/.fzf.bash ] && source ~/.fzf.bash

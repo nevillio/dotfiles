@@ -5,9 +5,9 @@ export EDITOR="nvim"
 alias vim='nvim --listen /tmp/nvim-server.pipe'
 
 # set fzf default command
-export FZF_DEFAULT_COMMAND='fd --type f --strip-cwd-prefix --hidden --follow --exclude .git'
-export FZF_CTRL_T_COMMAND="fd -tf --strip-cwd-prefix -hidden --follow --exclue .git"
-export FZF_ALT_C_COMMAND="fd -td --strip-cwd-prefix -hidden --follow --exclue .git"
+export FZF_DEFAULT_COMMAND="fd --type f --strip-cwd-prefix --hidden --follow --exclude .git,node_modules"
+export FZF_CTRL_T_COMMAND="$FZF_DEFAULT_COMMAND"
+export FZF_ALT_C_COMMAND="fd -td --strip-cwd-prefix --hidden --follow --exclude .git,node_modules"
 
 # set fzf default options
 export FZF_DEFAULT_OPTS="\
@@ -31,6 +31,10 @@ export FZF_DEFAULT_OPTS="\
   --color=scrollbar:#27a1b9 \
   --color=separator:#ff9e64 \
   --color=spinner:#ff007c \
+  --height 40% \
+  --tmux bottom,40% \
 "
+# Change trigger sequence from ** to ~~
+export FZF_COMPLETION_TRIGGER='~~'
 
-alias connect_bluetooth="bluetoothctl connect $(get_bluetooth_config 'NIRVANA_ION')"
+alias tmux="tmux -u"
