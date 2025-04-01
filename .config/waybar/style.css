@@ -58,28 +58,6 @@ button:hover {
   background-color: @red;
 }
 
-#tray {
-  background-color: rgba(0, 0, 0, 0.3);
-}
-
-#tray > .passive {
-  -gtk-icon-effect: dim;
-  background-color: rgba(0, 0, 0, 0.3);
-}
-
-#tray > .needs-attention {
-  -gtk-icon-effect: highlight;
-  background-color: rgba(0, 0, 0, 0.3);
-}
-
-#scratchpad {
-  font-weight: normal;
-}
-
-/* label:focus { */
-/*   background-color: #000000; */
-/* } */
-/**/
 #clock,
 #battery,
 #cpu,
@@ -113,11 +91,6 @@ button:hover {
 #network {
   color: @yellow;
   border-bottom: 2px solid @yellow;
-}
-
-#network.vpn {
-  margin-left: 0px;
-  border-bottom: 2px solid @text;
 }
 
 #battery {
