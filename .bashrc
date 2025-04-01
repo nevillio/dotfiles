@@ -122,7 +122,7 @@ fi
 # source ~/Projects/shell_scripting/util_functions.sh
 #
 # Set up fzf key bindings and fuzzy completion
-   source /usr/share/doc/fzf/examples/key-bindings.bash
+source /usr/share/doc/fzf/examples/key-bindings.bash
 
 # set up starship
 eval "$(starship init bash)"
@@ -144,6 +144,8 @@ bind -x '"\ee": _aichat_bash'
 function get_bluetooth_config(){
   rg "$1=" $HOME/.config/bluetooth_devices | cut -d'=' -f2
 }
+
+alias connect_bluetooth="bluetoothctl connect $(get_bluetooth_config 'NIRVANA_ION')"
 
 function reconnect_network() {
   if [ -z "$1" ]; then echo "No network provided"; return; fi
