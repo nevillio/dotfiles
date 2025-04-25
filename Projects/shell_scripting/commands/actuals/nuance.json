@@ -1,0 +1,21 @@
+{
+  "ncscredentials": {
+    "appKey": "970736DBC96EDBC0C04A9797D367FA9DDDA8DCEB9B8C951E5B6521B231DDB2D23AB4CAEE21BD0E290E3DE230CE8508F5C74306ED305BA1FC593B1E15127330BE",
+
+    "nmaid": "LGI_LAB_REFMODEL_20200314_DEV_NEU",
+
+    "supportedUiLanguages": [
+      {
+        "languageCode": "en",
+
+        "supportedDialects": [
+          {
+            "contextTag": "LAB_MIX2_EN",
+
+            "languageCode": "eng-USA"
+          }
+        ]
+      }
+    ]
+  }
+}

@@ -1,0 +1,27 @@
+#!/bin/bash
+
+# set -x
+. ~/.config/onemw/config
+my_ip=$(hostname -I | grep -o "^[0-9.]*")
+dirs=($(fd . ${PROJ}lgi/onemw-js/ -td -d1))
+
+#Present the options to the user
+echo "Choose the directory to mount: "
+for ((i = 0; i < ${#dirs[@]}; i++)); do
+	echo "$(expr $i + 1)) $(basename ${dirs[$i]})"
+done
+
+#Read the user's choice
+read -n 1 -s choice
+if [ $choice -gt ${#dirs[@]} ] || [ $choice -lt 1 ]; then
+	echo "Invalid choice"
+	exit 1
+fi
+dir=${dirs[$choice - 1]}
+
+ssh_box iptables -F
+ssh_box systemctl stop jsapp
+# ssh_box systemctl stop appmodule-lgioui-app.mount
+set -x
+ssh_box mount -t nfs "$my_ip:${dir}src /appmodule/lgioui/app"
+ssh_box systemctl restart jsapp

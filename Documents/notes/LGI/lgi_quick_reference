@@ -1,0 +1,19 @@
+Prepadding
+	Additional data that is collected before the beginning of playback
+	Typically includes:
+	Metadata
+	Encrypted keys
+	Silence or black frames
+	Synchronization Data - Audio and video sync
+	Buffering Data - To prebuffer the media content to avoid interruptions
+	Ad Data - 
+Postpadding
+	Additional data that is collected after the end of playback.
+	Includes:
+	End-of-content markers
+	Trailers or promo content
+	Analytics Data
+	Checksums
+	Padding Bytes
+	
+Blackout - Complete loss of service due to technical problems, content licensing issues, planned maintenance, censorship

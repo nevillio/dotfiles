@@ -1,0 +1,3 @@
+#!/bin/bash
+
+ssh_box journalctl -fxn -u jsapp

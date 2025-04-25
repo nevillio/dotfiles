@@ -1,0 +1,5 @@
+#!/usr/bin/env bash
+
+. ~/Projects/shell_scripting/stb_ops
+
+get_section "$1" | nvim -c "set buftype=nofile" -c "set filetype=json"

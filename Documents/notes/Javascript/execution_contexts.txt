@@ -1,0 +1,40 @@
+An execution context is created and pushed to the call stack whenever a script is loaded or a function is invoked. 
+It is the environment in which our code is executed.
+
+Each execution context has two phases: creation (memory setup for variable declaration, function declaration etc) and execution (execution context is on the call stack and the code is executed).
+Components of an execution context:
+1. Realm - Isolated environment in which code runs. 
+    A realm is created when we open a new tab, refresh a page, service workers, web workers, iframes etc. 
+    Consists of:
+        intrinsics (builtins like arrays, objects and syntax errors),
+        global objects
+            spec properties (intrinsics),
+            Host properties (document, fetch, localStorage, setTimeot)
+            User properties
+        and
+        global environment record:- Environment records manage the identifier bindings withing their contexts and contain the this keyword. Components:
+            1. ObjectRecord, references the global object. This record is used by variables declared with var keyword and functions declarations on the global scope. Initialized during the creation phase 
+            2. DeclarativeRecord stores identifier bindings that aren't global. Variables in this record are only initialized during the execution phase of the execution context.
+            3. GlobalThisValue - Global Object
+            4. OuterEnv - null
+2. LexicalEnvironment - Points to the environment record that contains the local bindings (DR in GER).
+3. VariableEnvironment - Points to the environment record that stores the bindings for the variables declared with the VAR keyword and functions (OR in GER).
+When a script is loaded, the global execution context is created.
+
+```
+// both variables are created during creation phase but initialized only in the execution phase
+const firstName = "Lydia";
+let lastName = "Lerman";
+
+//created and initialized in the creation phase
+function greet(nameToGreet) {
+    const fullName = nameToGreet + " " + lastName;
+    return "Hello, " + fullName;
+}
+
+greet(firstName);
+```
+var variables are initialized with undefined in the creation phase and then redefined with the actual value during the execution phase.
+Functions are intialized with the function object in the creation phase.
+Whenever a property that in unavailable in the current context environment record is accessed, the engine will traverse the scope chain till it finds the binding
+

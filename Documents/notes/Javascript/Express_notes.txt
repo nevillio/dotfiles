@@ -1,0 +1,5 @@
+Express notes
+app.use(middleware) will load the middleware for all the paths
+app.use('/', router) is probably the same as app.use(router)
+calling next(err) will skip the rest of the middleware, if any, and search for a registered error handling middleware. The middleware will receive err object as an argument
+Calling without an error handling middleware may lead to unexpected behaviour.

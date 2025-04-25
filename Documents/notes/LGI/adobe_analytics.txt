@@ -1,0 +1,15 @@
+onKey(): collectionsBrowser:1521
+	setAdobeAnalyticsDataForCollection(): AdobeAnalyticsDomainModel:67
+		formatCollectionData(): AdobeAnalyticsHelpers:1188
+			formatUserInteraction(): AdobeAnalyticsHelpers:340
+				formatInternalCampaignForTile()
+				formatUserInteraction()
+				formatUIComponentName()
+loadAndDisplayShow(): DetailPage.View():1410
+	trackAdobeAnalyticsPageView()
+		emit
+			reportAssetPageView(): AdobeAnalyticsDomainModel
+				message = generatePageReport(assetData)
+					addInteractionMessage()
+				sendAssetReport(message)
+					sendReport(message)

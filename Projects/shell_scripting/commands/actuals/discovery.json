@@ -1,0 +1,3 @@
+{
+  "cloud.discovery-service": "http://localhost:81/common-service/discovery-service/"
+}

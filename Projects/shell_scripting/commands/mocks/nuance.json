@@ -1,0 +1,30 @@
+{
+  "ncscredentials": {
+    "appKey": "D7ABE44A8DD8B59AF6AB3AE9C259355799F0E3B6E3A0A2ECF61369F08792D5261DC265F673A7FBEA2F18155643498B561CF741DF80AAE4D06A6B634707196E9D",
+    "nmaid": "LGI_PROD_UK_MIX2_20210111_DEV_NEU",
+    "supportedTtsVoices": [
+      {
+        "gender": "Female",
+        "isMultilingual": false,
+        "supportedLanguages": [
+          {
+            "languageCode": "en",
+            "supportedDialects": ["en-GB"]
+          }
+        ],
+        "voice": "Serena"
+      }
+    ],
+    "supportedUiLanguages": [
+      {
+        "languageCode": "en",
+        "supportedDialects": [
+          {
+            "contextTag": "LGI_VM_UK_ENGBR",
+            "languageCode": "eng-GBR"
+          }
+        ]
+      }
+    ]
+  }
+}

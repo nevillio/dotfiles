@@ -1,0 +1,16 @@
+{
+  "ncscredentials.supportedUiLanguages": [
+    {
+      "languageCode": "nl",
+      "supportedDialects": [
+        { "contextTag": "LGI_ZIGGO_NETHERLANDS_NL", "languageCode": "nld-NLD" }
+      ]
+    },
+    {
+      "languageCode": "en",
+      "supportedDialects": [
+        { "contextTag": "LGI_ZIGGO_NETHERLANDS_EN", "languageCode": "eng-USA" }
+      ]
+    }
+  ]
+}

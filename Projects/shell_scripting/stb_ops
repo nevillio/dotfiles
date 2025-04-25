@@ -1,0 +1,21 @@
+#!/bin/bash
+
+. ~/.config/onemw/config
+GET_SECTION_PATH='/configuration/getConfig/';
+SET_CONFIGURATION='/configuration/setConfiguration/';
+GET_CONFIGURATION='/configuration/getConfiguration/';
+CHANGE_SECTION_PATH='configuration/configChange/';
+UPDATE_CONFIGURATION_PATH='/configuration/updateConfiguration/';
+
+update_config() {
+    http -j PUT "http://$STB_IP:$AS_PORT$UPDATE_CONFIGURATION_PATH" "$1"
+}
+
+get_config() {
+    http -j GET "http://$STB_IP:$AS_PORT/$GET_CONFIGURATION_PATH"
+}
+
+get_section() {
+    http -j GET "http://$STB_IP:$AS_PORT$GET_SECTION_PATH$1"
+}
+

@@ -1,0 +1,16 @@
+tar 
+	-c create
+	-v verbose
+	-f file spec
+	-x extract
+	-r append
+	-z compress with gzip
+
+	`inotifywait` - watches for changes
+	inotifywait -m . -e modify
+
+	free - shows the volataile memory status
+
+NOTE: Everything in linux is a file
+	lsof - list open files
+	ss - sockets inspection 

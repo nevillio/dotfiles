@@ -1,0 +1,62 @@
+* {
+  font-size: inherit;
+}
+
+.btn {
+  padding: 0.5em 1em;
+  border: 1px solid;
+  border-radius: 0.25em;
+  outline: none;
+}
+
+.btn:focus {
+  box-shadow: 0px 0px 5px 0 darkblue;
+  color: darkgray;
+  border-color: darkgray;
+}
+
+.btn-primary {
+  background-color: violet;
+  border-color: violet;
+  color: white;
+}
+
+.btn-primary:focus {
+  box-shadow: 0px 0px 5px 0 darkblue;
+  background-color: darkviolet;
+  border-color: darkviolet;
+}
+
+.btn-accent {
+  background-color: blue;
+  border-color: blue;
+  color: white;
+}
+
+.btn-accent:focus {
+  background-color: darkblue;
+  border-color: darkblue;
+}
+
+.btn-danger {
+  background-color: red;
+  border-color: red;
+  color: white;
+}
+
+.btn-danger:focus {
+  background-color: darkred;
+  border-color: darkred;
+}
+
+.btn-large {
+  font-size: 2em;
+}
+
+.btn-small {
+  font-size: 0.5rem;
+}
+
+.btn-pill {
+  border-radius: 100%;
+}

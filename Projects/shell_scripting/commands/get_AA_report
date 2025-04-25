@@ -1,0 +1,3 @@
+#!/usr/bin/bash
+
+ssh_journal | rg -i '"evar145":"what' | cut -d'>' -f2 | jq --unbuffered '{eVar144,eVar30,eVar4,eVar136,eVar133,eVar145,eVar169,eVar161}' >> "$HOME/Projects/lgi/whats-on-tonight.json"

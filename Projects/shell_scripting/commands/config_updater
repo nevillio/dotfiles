@@ -1,0 +1,10 @@
+#!/bin/bash
+
+. ~/Projects/shell_scripting/stb_ops
+if [ -z "$@" ]; then
+    file=$(fd -p -t f -e json ~/Projects/shell_scripting/commands | fzf)
+    if [ -n "$file" ]; then
+        update_config "@$(realpath "$file")"
+    fi
+else update_config "$1"
+fi

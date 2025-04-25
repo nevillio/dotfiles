@@ -1,0 +1,33 @@
+Developer is still in charge of optimizing loading time and execution time of the requested data. We prefer short execution time to prevent the blocking of the main thread.
+
+1. We want to display data to the user as quickly as possible. Large bundles lead to increase in processing, loading, execution etc.
+Instead of requesting one large bundle we can request multiple smaller bundles. This reduces the first contentful paint time(FCP) and Largest Contentful Paint(LCP) time
+We'll also want the content to be interacted with, the time for which is called time to interactive(TTI).
+
+Some part of the bundle will only get executed if the user interacts with it. This should be separated from the essential code.
+
+Methods:
+1. Compressing Javascript
+	Gzip and Brotli
+	Webpack uses
+	A. HTTP Compression
+	Lossy and Lossless
+	B. Minification
+	C. Static and Dynamic Compression
+
+
+2. Dynamic Import
+
+3. Import on Interacton
+Instead of loading resources eagerly, we can load them on interaction.
+
+
+Preload -  Fetch and cache a specific style sheet before it's actually needed. <link rel="preload"
+
+Lazy Loading - The browser delays fetching until the image becomes visible. When the lazy attribute is detected, the browser fetches the image.
+
+Asynce - Browser doesn't wait for the execution to finish. Once complete, ASAP execution regardless of whether html is available.
+Defer - The browser defers execution until the html is available.
+
+HTTP cache headers are special instructions sent by web servers to browsers to control caching.
+Service Workers are a powerful web API that allows you to intercept network requests and responses, potentially caching resources and enabling offline functionality for your web application. They act as intermediaries between the browser and the server, giving developers more control over how resources are handled.

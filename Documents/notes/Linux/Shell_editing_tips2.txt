@@ -1,0 +1,133 @@
+ Mocking a file
+a) Enter input mode with cat - 
+	Input mode is typically initiated when a command that reads from standard input (stdin) is executed. Eg: cat -, grep, read.
+b) Create a process substitution
+	<(): Creates a process substitution, essentially generating a temporary file-like object containing your input.
+cat - <(echo "Your input here")
+c) Press <C-D> to escape the input mode
+
+Process vs Program
+Process - When a program is in primary memmory, it becomes a process.
+Program - A stored file in a secondary memory
+
+Correct Sequence for input and output
+Input: Keyboard -> STDIN -> PROCESS or PROGRAM
+Output: PROCESS -> STDOUT -> Display
+
+Redirection Operators
+< file - Read contents from a file
+> file - Write to a file
+2> file - Write error to a file upon failure of execution
+
+Find the files and directories that consume the most storage space
+file: fd -tf -X du -Sh | sort -rh | head -n 5
+directory: fd -td -X du -sh | sort -rh | head -n 5
+
+To prevent accidental overwrites along with the cp and mv commands, the -i and -n flags can be used. The former will prompt the user before overwrite and the latter will prevent overwrite
+
+Archiving
+create - cv(z)f
+list - tv(z)f
+append - rvf
+extract - xv(z)f
+
+
+Saving to another file in vim
+:/pattern/w >>newtextfile.txt
+w - saves the entire file to a new file 
+.w - saves only the matching lines to the new file 
+
+.w does not switch to normal mode. Can be used to quickly save immediately after an operation, save macros and to chain other commands (.w | command)
+
+
+Shell_scripting
+Array Operations
+First element - $ARRAY
+All elements - ${ARRAY[*]} OR ${ARRAY[@]}
+Length of the array - ${#ARRAY[*]}
+nth element of the array - ${ARRAY[n-1]}
+
+Special purpose variables
+$0 - name of the current script
+$# - number of arguments supplied to a script
+$@ - Arguments received in command line
+$? - Exit status of the last command executed
+$$ - The process number of current shell
+$! - The process number of the last background command
+
+
+Shift is used to shift positional parameters.
+
+Variable Substitution
+${var:=word} - var is set to value of word, if null or unset
+${var:-=word} - var is set to value of word, if null or unset, value changes.
+${var:+=word} - var is set to value of word, if set. Value changes.
+${var:?message} - message is printed to standard error, if var is null or unset.
+
+Iterative Constructs
+
+for loops: Use when you know how many iterations you need upfront.
+while loops: Use when you need to repeat something based on a condition that might change during execution.
+until loops: Use when you need to repeat something until a specific condition becomes true.
+
+While use cases
+
+Reading input from the user until a specific condition is met.
+Processing files or data streams until the end is reached.
+Implementing indefinite loops that continue until an internal event occurs.
+
+while read -p "Enter a number (or 'quit' to exit): " num; do
+    if [[ $num == "quit" ]]; then
+        break
+    else
+        echo "You entered: $num"
+    fi
+done
+
+Until use cases
+
+Retry operations until they succeed.
+Delay actions until specific circumstances are met.
+
+Implement "keep trying" scenarios.
+
+until ping -c1 google.com &>/dev/null; do
+    echo "Waiting for internet connection..."
+    sleep 5
+done
+echo "Internet connection established!"
+
+Formatting with printf
+Given three variables name, emp_no and job_level, print them in a formatted manner
+printf "name: %s\nEmployee number: %s\nJob Level: %s\n" $name $emp_no $job_level
+
+Paste last command into clipboard
+fc -ln -1 | xclip -selection clipboard
+
+When to quote variables: When they contain whitespaces or meta characters
+
+Use double quotes for string interpolation
+Use single quotes for static URL's.
+Lose quotes when you specifically require the shell to perform word splitting and or wildcard expansion.
+Word splitting without quotes
+words = "foo bar baz"
+for word in $words; do
+    echo $word
+done
+foo
+bar
+baz
+
+for word in $words; do echo "$word"; done
+// output: foo bar baz
+
+for word in '$words'; do echo "$word"; done
+// output: $words
+
+Wildcard expansion
+pattern = 'file*.txt'
+ls $pattern // file1.txt file_other.txt, proacative shell
+
+ls "$pattern" // ls: cannot acess file*.txt: No such file or directory, lazy shell
+
+ls '$pattern' // ls: cannot acess $pattern: No such file or directory, literal shell

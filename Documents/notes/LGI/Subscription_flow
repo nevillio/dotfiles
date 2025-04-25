@@ -1,0 +1,13 @@
+The subscriptionWizardFlow class has a step property with an object containing the names of the steps as keys and an object containing three methods prev(), next() and enter() as the value for each key. (line 58-64 subscriptionWizard.Flow.js)
+The class also has the three methods prev(), next() and enter(). When one of these methods is called on instance of the class, the instance checks for the current step and calls the corresponding method of that step. 
+The steps also follow a sequence EDIT -> MANAGE -> TIER_INFO -> (PURCHASE_CONFIRM | CANCEL). The next method of one step will set the current step as the next step, if it's not the last step in the sequence. 
+
+The following events happen under the hood when the subscribe button is clicked in the user interface:
+TierInfo.View.js - onClick - calls the next method on an instance of the subscriptionWizardFlow class (line 25)
+The next method checks the current step which is createTierInfoStep and calls the next method of that step (line 96)
+This method sets the step to the next step in the sequence which is the PURCHASE_CONFIRM step using the setState method. When the state is changed, the view is updated and the enter method of the current step is called (line 143 of BaseWizard.View.js)
+The enter method similar to the next method calls the enter method of PURCHASE_CONFIRM step(line 106). The askPin method of the SubscriptionWizardFlow will display the pin.
+
+
+
+

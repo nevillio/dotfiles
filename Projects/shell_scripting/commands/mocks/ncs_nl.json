@@ -1,0 +1,359 @@
+{
+  "ncscredentials": {
+    "appKey": "D7ABE44A8DD8B59AF6AB3AE9C259355799F0E3B6E3A0A2ECF61369F08792D5261DC265F673A7FBEA2F18155643498B561CF741DF80AAE4D06A6B634707196E9D",
+    "nmaid": "LGI_PROD_UK_MIX2_20210111_DEV_NEU",
+    "supportedTtsVoices": [
+      {
+        "gender": "Female",
+        "isMultilingual": true,
+        "supportedLanguages": [
+          {
+            "languageCode": "fr",
+            "supportedDialects": ["fr-FR"]
+          },
+          {
+            "languageCode": "nl",
+            "supportedDialects": ["nl-NL"]
+          },
+          {
+            "languageCode": "fy",
+            "supportedDialects": ["nl-NL"]
+          },
+          {
+            "languageCode": "en",
+            "supportedDialects": ["en-US"]
+          },
+          {
+            "languageCode": "de",
+            "supportedDialects": ["de-DE"]
+          },
+          {
+            "languageCode": "tr",
+            "supportedDialects": ["tr-TR"]
+          },
+          {
+            "languageCode": "uk",
+            "supportedDialects": ["uk-UA"]
+          },
+          {
+            "languageCode": "ar",
+            "supportedDialects": ["ar-SA"]
+          },
+          {
+            "languageCode": "in",
+            "supportedDialects": ["hi-IN"]
+          },
+          {
+            "languageCode": "hi",
+            "supportedDialects": ["hi-IN"]
+          },
+          {
+            "languageCode": "es",
+            "supportedDialects": ["es-ES"]
+          },
+          {
+            "languageCode": "it",
+            "supportedDialects": ["it-IT"]
+          },
+          {
+            "languageCode": "pt",
+            "supportedDialects": ["pt-PT"]
+          },
+          {
+            "languageCode": "ru",
+            "supportedDialects": ["ru-RU"]
+          },
+          {
+            "languageCode": "sv",
+            "supportedDialects": ["sv-SE"]
+          },
+          {
+            "languageCode": "vi",
+            "supportedDialects": ["vi-VN"]
+          },
+          {
+            "languageCode": "da",
+            "supportedDialects": ["da-DK"]
+          },
+          {
+            "languageCode": "pl",
+            "supportedDialects": ["pl-PL"]
+          },
+          {
+            "languageCode": "fi",
+            "supportedDialects": ["fi-FI"]
+          },
+          {
+            "languageCode": "et",
+            "supportedDialects": ["et-EE"]
+          },
+          {
+            "languageCode": "el",
+            "supportedDialects": ["el-GR"]
+          },
+          {
+            "languageCode": "ca",
+            "supportedDialects": ["ca-ES"]
+          },
+          {
+            "languageCode": "nb",
+            "supportedDialects": ["nb-NO"]
+          },
+          {
+            "languageCode": "no",
+            "supportedDialects": ["nb-NO"]
+          },
+          {
+            "languageCode": "af",
+            "supportedDialects": ["af-ZA"]
+          },
+          {
+            "languageCode": "am",
+            "supportedDialects": ["am-ET"]
+          },
+          {
+            "languageCode": "az",
+            "supportedDialects": ["az-AZ"]
+          },
+          {
+            "languageCode": "bg",
+            "supportedDialects": ["bg-BG"]
+          },
+          {
+            "languageCode": "bn",
+            "supportedDialects": ["bn-BD"]
+          },
+          {
+            "languageCode": "bs",
+            "supportedDialects": ["bs-BA"]
+          },
+          {
+            "languageCode": "cm",
+            "supportedDialects": ["zh-CN"]
+          },
+          {
+            "languageCode": "cn",
+            "supportedDialects": ["sr-RS"]
+          },
+          {
+            "languageCode": "co",
+            "supportedDialects": ["cy-GB"]
+          },
+          {
+            "languageCode": "cs",
+            "supportedDialects": ["cs-CZ"]
+          },
+          {
+            "languageCode": "cy",
+            "supportedDialects": ["cy-GB"]
+          },
+          {
+            "languageCode": "eu",
+            "supportedDialects": ["eu-ES"]
+          },
+          {
+            "languageCode": "fa",
+            "supportedDialects": ["fa-IR"]
+          },
+          {
+            "languageCode": "fil",
+            "supportedDialects": ["fil-PH"]
+          },
+          {
+            "languageCode": "ga",
+            "supportedDialects": ["ga-IE"]
+          },
+          {
+            "languageCode": "gd",
+            "supportedDialects": ["ga-IE"]
+          },
+          {
+            "languageCode": "gl",
+            "supportedDialects": ["gl-ES"]
+          },
+          {
+            "languageCode": "gu",
+            "supportedDialects": ["hi-IN"]
+          },
+          {
+            "languageCode": "he",
+            "supportedDialects": ["he-IL"]
+          },
+          {
+            "languageCode": "hr",
+            "supportedDialects": ["hr-HR"]
+          },
+          {
+            "languageCode": "hu",
+            "supportedDialects": ["hu-HU"]
+          },
+          {
+            "languageCode": "hy",
+            "supportedDialects": ["hy-AM"]
+          },
+          {
+            "languageCode": "id",
+            "supportedDialects": ["id-ID"]
+          },
+          {
+            "languageCode": "is",
+            "supportedDialects": ["is-IS"]
+          },
+          {
+            "languageCode": "ja",
+            "supportedDialects": ["ja-JP"]
+          },
+          {
+            "languageCode": "ka",
+            "supportedDialects": ["ka-GE"]
+          },
+          {
+            "languageCode": "kk",
+            "supportedDialects": ["kk-KZ"]
+          },
+          {
+            "languageCode": "km",
+            "supportedDialects": ["km-KH"]
+          },
+          {
+            "languageCode": "kn",
+            "supportedDialects": ["kn-IN"]
+          },
+          {
+            "languageCode": "ko",
+            "supportedDialects": ["ko-KR"]
+          },
+          {
+            "languageCode": "lb",
+            "supportedDialects": ["de-DE"]
+          },
+          {
+            "languageCode": "lo",
+            "supportedDialects": ["lo-LA"]
+          },
+          {
+            "languageCode": "lt",
+            "supportedDialects": ["lt-LT"]
+          },
+          {
+            "languageCode": "lv",
+            "supportedDialects": ["lv-LV"]
+          },
+          {
+            "languageCode": "mk",
+            "supportedDialects": ["mk-MK"]
+          },
+          {
+            "languageCode": "ml",
+            "supportedDialects": ["ml-IN"]
+          },
+          {
+            "languageCode": "mn",
+            "supportedDialects": ["mn-MN"]
+          },
+          {
+            "languageCode": "mr",
+            "supportedDialects": ["hi-IN"]
+          },
+          {
+            "languageCode": "ms",
+            "supportedDialects": ["ms-MY"]
+          },
+          {
+            "languageCode": "mt",
+            "supportedDialects": ["mt-MT"]
+          },
+          {
+            "languageCode": "my",
+            "supportedDialects": ["my-MM"]
+          },
+          {
+            "languageCode": "ne",
+            "supportedDialects": ["ne-NP"]
+          },
+          {
+            "languageCode": "ro",
+            "supportedDialects": ["ro-RO"]
+          },
+          {
+            "languageCode": "si",
+            "supportedDialects": ["si-LK"]
+          },
+          {
+            "languageCode": "sk",
+            "supportedDialects": ["sk-SK"]
+          },
+          {
+            "languageCode": "sl",
+            "supportedDialects": ["sl-SI"]
+          },
+          {
+            "languageCode": "so",
+            "supportedDialects": ["so-SO"]
+          },
+          {
+            "languageCode": "sq",
+            "supportedDialects": ["sq-AL"]
+          },
+          {
+            "languageCode": "sr",
+            "supportedDialects": ["sr-RS"]
+          },
+          {
+            "languageCode": "sw",
+            "supportedDialects": ["sw-KE"]
+          },
+          {
+            "languageCode": "ta",
+            "supportedDialects": ["ta-IN"]
+          },
+          {
+            "languageCode": "te",
+            "supportedDialects": ["te-IN"]
+          },
+          {
+            "languageCode": "th",
+            "supportedDialects": ["th-TH"]
+          },
+          {
+            "languageCode": "ur",
+            "supportedDialects": ["ur-PK"]
+          },
+          {
+            "languageCode": "yu",
+            "supportedDialects": ["zh-HK"]
+          },
+          {
+            "languageCode": "zh",
+            "supportedDialects": ["zh-CN"]
+          },
+          {
+            "languageCode": "zu",
+            "supportedDialects": ["zu-ZA"]
+          }
+        ],
+        "voice": "Libby"
+      }
+    ],
+    "supportedUiLanguages": [
+      {
+        "languageCode": "nl",
+        "supportedDialects": [
+          {
+            "contextTag": "LGI_ZIGGO_NETHERLANDS_NL",
+            "languageCode": "nld-NLD"
+          }
+        ]
+      },
+      {
+        "languageCode": "en",
+        "supportedDialects": [
+          {
+            "contextTag": "LAB_MIX2_EN",
+            "languageCode": "eng-USA"
+          }
+        ]
+      }
+    ]
+  }
+}
