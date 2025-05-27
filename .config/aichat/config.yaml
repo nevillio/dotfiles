@@ -1,7 +1,7 @@
 # see https://github.com/sigoden/aichat/blob/main/config.example.yaml
 
-# model: gemini:gemini-exp-1206
 model: gemini
+# model: ollama
 clients:
   - type: cohere
 
@@ -26,3 +26,7 @@ clients:
                 threshold: BLOCK_NONE
               - category: HARM_CATEGORY_DANGEROUS_CONTENT
                 threshold: BLOCK_NONE
+
+  - type: openai-compatible
+    name: ollama
+    api_base: http://localhost:11434/v1
