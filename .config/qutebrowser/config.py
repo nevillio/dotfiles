@@ -19,6 +19,8 @@ config.set(
         "mdn": "https://developer.mozilla.org/en-US/search?q={}",
         "dai": "https://duckduckgo.com/?q={}&ia=chat",
         "pai": "https://www.perplexity.ai/search/?q={}",
+        "tribe": "https://jira.lgi.io/browse/TRIBE-{}",
+        "arris": "https://jira.lgi.io/browse/ARRISEOS-{}",
     },
 )
 c.fonts.web.size.default = 16

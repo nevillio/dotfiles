@@ -33,10 +33,13 @@ gui:
       - "#c0caf5"
 git:
   branchLogCmd: "git log --graph --color=always --abbrev-commit --decorate --date=relative --pretty=medium --oneline {{branchName}} --"
-  commitPrefix:
-  "/home/nevillio/onemw-js/jsapp/":
-    pattern: "^(.*)"
-    replace: "[$1] "
-  "/home/nevillio/onemw-js/adobe-analytics/":
-    pattern: "^(.*)"
-    replace: "[$1] "
+  commitPrefixes:
+    jsapp:
+      - pattern: "^(.*)"
+        replace: "[$1] "
+    youtube:
+      - pattern: "^(.*)"
+        replace: "[$1] "
+    tts-exp:
+      - pattern: "^(.*)"
+        replace: "[$1] "
