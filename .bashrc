@@ -82,6 +82,14 @@ esac
 # pnpm end
 #
 
+export MASON_BIN="$HOME/.local/share/nvim/mason/bin"
+if [ -d "$MASON_BIN" ]; then
+  case ":$PATH:" in
+    *":$MASON_BIN:"*) ;;
+    *) export PATH="$MASON_BIN:$PATH" ;;
+  esac
+fi
+
 # Add key if not already added
 if ! keyctl list @s | grep -q "ssh:lgi_ssh_key"; then
     keyctl add user "ssh:lgi_ssh_key" "$(cat ~/.ssh/id_ed25519)" @s
