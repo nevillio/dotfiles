@@ -1,7 +1,7 @@
 @import "mocha.css";
 
 * {
-  font-family: "JetBrains Nerd Font";
+  font-family: "JetBrains Mono";
   font-size: 14px;
   min-height: 0;
   /* padding: 2px; */
@@ -139,7 +139,7 @@ button:hover {
   border-bottom: 2px solid @red;
 }
 
-#bluetooth {
+#backlight {
   border-bottom: 2px solid;
 }
 
