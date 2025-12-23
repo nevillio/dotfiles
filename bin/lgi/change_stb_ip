@@ -1,0 +1,45 @@
+#!/bin/bash
+
+# check if file exists
+
+CONFIG_FILE="$HOME/.config/onemw/config"
+if [ ! -f "$CONFIG_FILE" ]; then
+	echo "Error: No config file, you dummy!!!"
+	exit 1;
+fi
+. ~/.config/onemw/config
+
+if [ $# -eq 0 ]; then
+	echo "Error: No argument provided"
+	echo "Usage: $(basename $0) <new_host>"
+	exit 1;
+fi
+
+NEW_IP_PARTS="$1"
+IFS='.' read -ra PROVIDED_OCTETS <<< "$NEW_IP_PARTS"
+
+# Check if STB_IP exists
+if [ -z "$STB_IP" ]; then
+	echo "Error: STB_IP not found in config"
+	exit 1;
+fi
+
+
+CURRENT_IP="$STB_IP"
+# Split current IP into array
+IFS='.' read -ra CURRENT_OCTETS <<< "$CURRENT_IP"
+
+# Replace octets based on how many were provided
+start_index=$((4 - ${#PROVIDED_OCTETS[@]}))
+for i in "${!PROVIDED_OCTETS[@]}"; do
+	index=$((start_index+i))
+	CURRENT_OCTETS[$index]="${PROVIDED_OCTETS[$i]}"
+done
+
+# Construct new IP
+NEW_IP="${CURRENT_OCTETS[0]}.${CURRENT_OCTETS[1]}.${CURRENT_OCTETS[2]}.${CURRENT_OCTETS[3]}"
+
+echo "Changing STB IP from $CURRENT_IP to $NEW_IP"
+
+ESCAPED_CURRENT=$(echo "$CURRENT_IP" | sed 's/\./\\./g')
+sed -i "s/$ESCAPED_CURRENT/$NEW_IP/g" "$CONFIG_FILE"

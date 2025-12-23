@@ -1,0 +1,3 @@
+#! /bin/bash
+
+kitty --title rc_start -e ~/bin/lgi/rc_start > /dev/null 2>&1 &

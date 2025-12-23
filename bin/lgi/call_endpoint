@@ -1,0 +1,4 @@
+#! /bin/bash
+
+. ~/.config/onemw/config
+http -j GET "http:$STB_IP:$AS_PORT/$1"

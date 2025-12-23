@@ -1,0 +1,20 @@
+#! /bin/bash
+
+# This script is used to transfer screenshots from the STB to the local machine.
+. ~/.config/onemw/config
+
+LAPTOP_PATH="/home/nevillio/Pictures/lgi/${2:-tts}"
+target="/tmp/screenshots/${1:-}"
+
+if [ -z "$STB_IP" ]; then
+    echo "Error: STB_IP not set in config"
+    exit 1
+fi
+
+mkdir -p "$LAPTOP_PATH"
+
+if scp -O -o StrictHostKeyChecking=no -o HostKeyAlgorithms=+ssh-rsa -r root@"$STB_IP":"$target" "$LAPTOP_PATH"; then
+	echo "Screenshot(s) transferred successfully to $LAPTOP_PATH"
+else
+	echo "Error: Transfer failed from $STB_IP:$target"
+fi

@@ -1,0 +1,2 @@
+#!/bin/bash
+wpctl set-mute "${1:-103}" 0

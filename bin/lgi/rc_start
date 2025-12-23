@@ -1,0 +1,6 @@
+#!/bin/bash
+
+tools_dir="/home/nevillio/work/lgi/onemw-js-tools-master"
+export NODE_PATH="$NODE_PATH:$tools_dir/rcu"
+cd $tools_dir/vrcu
+exec node $tools_dir/vrcu/vrcu.js "$@"

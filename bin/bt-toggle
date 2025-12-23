@@ -1,0 +1,16 @@
+#!/bin/bash
+
+function get_device_id(){
+  bluetoothctl devices | rg -i "$1" | cut -d ' ' -f2
+}
+
+device_id=${get_device_id}
+
+if bluetoothctl info "$device_id" | rg -i 'connected'; then
+	bluetoothctl disconnect "$device_id"
+	echo "Disconnected"
+else
+	bluetoothctl connect "$device_id"
+	echo "Connected"
+fi
+

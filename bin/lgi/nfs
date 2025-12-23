@@ -1,0 +1,52 @@
+#!/bin/bash
+
+if [ -f ~/.config/onemw/config ]; then
+    . ~/.config/onemw/config
+else
+    echo "Where's your config file, duh?"
+    exit 1
+fi
+
+my_ip=$(ip -4 addr show | grep -oP '(?<=inet\s)\d+(\.\d+){3}' | grep -v '127.0.0.1' | head -n 1)
+
+if [ -z "$my_ip" ]; then
+    echo "No IP, check your connection, bruh"
+    exit 1
+fi
+
+cd "$HOME"
+dirs=($(fd . work/lgi/onemw-js/ -td -d1))
+
+length=${#dirs[@]}
+#Present the options to the user
+if [ $length -gt 1 ]; then
+    echo "Choose the directory to mount: "
+    for ((i = 0; i < ${#dirs[@]}; i++)); do
+        echo "$(($i + 1)). $(basename ${dirs[$i]})"
+    done
+
+    #Read the user's choice
+    read -n 1 -s choice
+    # echo
+    if [ $choice -gt $length ] || [ $choice -lt 1 ]; then
+        echo "Invalid choice"
+        exit 1
+    fi
+
+    dir="${dirs[$choice - 1]}"
+else
+    dir="${dirs[0]}"
+fi
+echo "You have selected the directory $dir"
+
+if ! type ssh_box &> /dev/null; then
+    echo "What's an ssh_box, duh?"
+    exit 1
+fi
+
+ssh_box iptables -F
+ssh_box systemctl stop jsapp
+# ssh_box systemctl stop appmodule-lgioui-app.mount
+set -x
+ssh_box mount -t nfs "$my_ip:/home/nevillio/${dir}src /appmodule/lgioui/app"
+ssh_box systemctl restart jsapp

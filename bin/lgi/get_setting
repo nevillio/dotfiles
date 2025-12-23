@@ -1,0 +1,6 @@
+#! /bin/bash
+
+. ~/work/scripts/stb_ops
+
+get_setting "$1"
+

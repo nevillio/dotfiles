@@ -1,0 +1,5 @@
+#!/bin/bash
+
+ssh_box systemctl stop jsapp
+ssh_box umount /appmodule/lgioui/app
+ssh_box systemctl restart jsapp

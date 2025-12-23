@@ -1,0 +1,43 @@
+#!/bin/bash
+passwords=("LG-Quartz-1:Infy@123Infy@123" "LG Trinfy 5G:LGInfy@5G")
+
+function get_password() {
+    for entry in "${passwords[@]}"; do
+        if [[ "$entry" == "$1:"* ]]; then
+            echo "${entry#*:}"
+            return 0
+        fi
+    done
+    return 1
+}
+
+get_key() {
+    for credential in "${passwords[@]}"; do
+        echo "${credential%%:*}"
+    done
+}
+
+select_key() {
+    local selected_key=$(get_key | fzf --prompt="Select a key: " --height=40% --border)
+
+    if [[ -n "$selected_key" ]]; then
+        echo "$selected_key"
+    else
+        echo "No network selected" >&2
+        return 1
+    fi
+}
+
+selected_key=$(select_key)
+if [[ $? -ne 0 ]]; then
+	exit 1
+fi
+
+password=$(get_password "$selected_key")
+
+if [[ $? -eq 0 ]]; then
+    ssh_box "wpa_passphrase '$selected_key' '$password' > /tmp/wpa_temp.conf && wpa_supplicant -B -i wlan2 -c /tmp/wpa_temp.conf && rm /tmp/wpa_temp.conf && udhcpc -i wlan2"
+else
+    echo "Password retrieval failed"
+    exit 1
+fi

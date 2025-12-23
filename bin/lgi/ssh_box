@@ -1,0 +1,7 @@
+#!/bin/bash
+
+. ~/.config/onemw/config
+# source "$HOME/Projects/shell_scripting/util_functions.sh"
+
+# reconnect_network "$STB_NETWORK_SSID"
+ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null root@$STB_IP $@
