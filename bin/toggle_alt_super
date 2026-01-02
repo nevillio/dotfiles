@@ -1,0 +1,13 @@
+#! /bin/bash
+
+current_options=$(hyprctl getoption input:kb_options -j | jq -r '.str')
+
+if [[ "$current_options" = *"altwin:swap_alt_win"* ]]; then
+    new_options="caps:escape"
+    notify-send "Keys" "Alt/Super restored to normal"
+else
+    new_options="caps:escape, altwin:swap_alt_win"
+    notify-send "Keys" "Alt/Super swapped"
+fi
+
+hyprctl keyword input:kb_options "$new_options"

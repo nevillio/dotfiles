@@ -1,16 +1,25 @@
 #!/bin/bash
 
+if test "$#" -ne 1; then
+  echo "Usage: bt-toggle <device_name>"
+  exit 1
+fi
+
 function get_device_id(){
-  bluetoothctl devices | rg -i "$1" | cut -d ' ' -f2
+  echo $(bluetoothctl devices | rg -i "$1" | cut -d ' ' -f2)
 }
 
-device_id=${get_device_id}
+device_id=$(get_device_id "$1")
+if test "$device_id" == ""; then
+	echo "Device not found, buddy"
+	exit 1
+fi
 
-if bluetoothctl info "$device_id" | rg -i 'connected'; then
+is_connected=$(bluetoothctl info "$device_id" | rg -i 'connected' | cut -d ' ' -f2)
+
+if test "$is_connected" == 'yes'; then
 	bluetoothctl disconnect "$device_id"
-	echo "Disconnected"
 else
 	bluetoothctl connect "$device_id"
-	echo "Connected"
 fi
 
