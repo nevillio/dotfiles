@@ -67,18 +67,22 @@ fi
 # set up starship
 eval "$(starship init bash)"
 
-# api keys
-eval "$(direnv hook bash)"
-
 # Set up fzf key bindings and fuzzy completion
 eval "$(fzf --bash)"
 
-# pnpm
-export PNPM_HOME="/home/nevillio/.local/share/pnpm"
+# pnpm — isolated under ~/personal
+export PNPM_HOME="$HOME/personal/.pnpm-home"
 case ":$PATH:" in
-  *":$PNPM_HOME:"*) ;;
-  *) export PATH="$PNPM_HOME:$PATH" ;;
+  *":$PNPM_HOME/bin:"*) ;;
+  *) export PATH="$PNPM_HOME/bin:$PATH" ;;
 esac
+
+pnpm() {
+  case "$PWD/" in
+    "$HOME/personal/"*) command pnpm "$@" ;;
+    *) echo "pnpm: only allowed under ~/personal" >&2; return 1 ;;
+  esac
+}
 # pnpm end
 #
 
@@ -90,7 +94,9 @@ if [ -d "$MASON_BIN" ]; then
   esac
 fi
 
-# Add key if not already added
-if ! keyctl list @s | grep -q "ssh:lgi_ssh_key"; then
-    keyctl add user "ssh:lgi_ssh_key" "$(cat ~/.ssh/id_ed25519)" @s
-fi
+export PATH="$HOME/bin:$PATH"
+#
+# # Add key if not already added
+# if ! keyctl list @s | grep -q "ssh:lgi_ssh_key"; then
+#     keyctl add user "ssh:lgi_ssh_key" "$(cat ~/.ssh/id_ed25519)" @s
+# fi

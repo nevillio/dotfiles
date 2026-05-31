@@ -1,4 +1,0 @@
-#!/bin/bash
-. ~/work/scripts/stb_ops
-
-update_setting "cpe.uiTestTools" "--raw=$1"

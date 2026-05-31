@@ -1,5 +1,0 @@
-#! /bin/bash
-
-. ~/work/scripts/stb_ops
-
-update_setting "$1" "$2"
