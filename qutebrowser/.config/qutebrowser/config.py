@@ -43,17 +43,7 @@ config.bind(",m", "spawn ~/bin/umpv {url}")
 config.bind(",M", "hint links spawn ~/bin/umpv {hint-url}")
 config.bind(";M", "hint --rapid links spawn ~/bin/umpv {hint-url}")
 
-# ======================= Redline Insert Mode ============= {{{
-# Awesome way to open vim from qutebrowser
-# c.editor.command = [
-#     os.environ["TERMINAL"],
-#     "-e",
-#     os.environ["EDITOR"],
-#     "-f",
-#     "{file}",
-#     "-c",
-#     "normal {line}G{column0}1",
-# ]
+c.editor.command = ["kitty", "-e", "nvim", "-f", "{file}", "-c", "normal {line}G{column0}1"]
 
 config.bind("<Ctrl-h>", "fake-key <Backspace>", "insert")
 config.bind("<Ctrl-a>", "fake-key <Home>", "insert")
@@ -69,5 +59,5 @@ config.bind("<Ctrl-d>", "fake-key <Delete>", "insert")
 config.bind("<Ctrl-w>", "fake-key <Ctrl-Backspace>", "insert")
 config.bind("<Ctrl-u>", "fake-key <Shift-Home><Delete>", "insert")
 config.bind("<Ctrl-k>", "fake-key <Shift-End><Delete>", "insert")
-config.bind("<Ctrl-x><Ctrl-e>", "open-editor", "insert")
-# }}}
+config.bind("<Ctrl-x><Ctrl-e>", "edit-text", "insert")
+config.bind("<Ctrl-x><Ctrl-p>", "spawn ~/bin/qute-bootdev", "insert")
