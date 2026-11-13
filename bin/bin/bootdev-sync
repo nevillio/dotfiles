@@ -1,0 +1,308 @@
+#!/usr/bin/env python3
+"""Local bridge between boot.dev's CodeMirror editor and a local nvim buffer.
+
+Endpoints (all on 127.0.0.1:8765):
+
+  POST /pull?uuid=<lesson>    body = current editor code; writes
+                              ~/bootdev/<lesson>/code.<ext> and opens it in the
+                              running nvim server (or starts one).
+  POST /push?uuid=<lesson>    body = saved nvim buffer; fans it out to the
+                              lesson's SSE subscribers (the boot.dev tab).
+  GET  /events?uuid=<lesson>  SSE stream of pushes; nothing is sent on
+                              connect, so the editor is only touched when
+                              nvim saves. The greasemonkey script uses this.
+
+Environment overrides:
+  BOOTDEV_PORT        TCP port (default 8765)
+  BOOTDEV_ROOT        lesson directory (default ~/bootdev)
+  BOOTDEV_NVIM_SOCK   nvim RPC socket (default $XDG_RUNTIME_DIR/bootdev-nvim.sock)
+  BOOTDEV_OPEN_NVIM   set to 0 to disable opening nvim (useful for tests)
+"""
+
+import http.server
+import json
+import os
+import pathlib
+import queue
+import re
+import shutil
+import subprocess
+import threading
+import urllib.parse
+
+HOST = "127.0.0.1"
+PORT = int(os.environ.get("BOOTDEV_PORT", "8765"))
+ROOT = pathlib.Path(os.environ.get("BOOTDEV_ROOT", pathlib.Path.home() / "bootdev"))
+NVIM_SOCK = os.environ.get(
+    "BOOTDEV_NVIM_SOCK",
+    f"/run/user/{os.getuid()}/bootdev-nvim.sock",
+)
+OPEN_NVIM = os.environ.get("BOOTDEV_OPEN_NVIM", "1") != "0"
+UUID_RE = re.compile(r"^[A-Za-z0-9-]+$")
+
+NVIM = shutil.which("nvim") or "nvim"
+KITTY = shutil.which("kitty") or "kitty"
+
+
+def origin_allowed(origin: str | None) -> bool:
+    """Allow local tools (no Origin) and any https://*.boot.dev page."""
+    if origin is None:
+        return True
+    parsed = urllib.parse.urlparse(origin)
+    return parsed.scheme == "https" and (
+        parsed.hostname == "boot.dev" or (parsed.hostname or "").endswith(".boot.dev")
+    )
+
+
+# uuid -> {"rev": int, "code": str, "subs": [queue.Queue, ...]}
+STATE: dict[str, dict] = {}
+LOCK = threading.Lock()
+
+
+def detect_ext(code: str) -> str:
+    """Best-effort filetype from the code, mirroring qute-bootdev's detector."""
+    if re.search(
+        r"^\s*(def|class)\s+\w+|^\s*(import|from)\s+[A-Za-z_]"
+        r"|^\s*(elif|except|finally)\s*|^\s*(if|for|while|with|try)\b.*:\s*$"
+        r"|\bprint\(|__name__\s*==",
+        code,
+        re.M,
+    ):
+        return "py"
+    if re.search(
+        r"\b(interface|type)\s+[A-Z]\w*"
+        r"|:\s*(string|number|boolean|void|any|unknown|never)\b"
+        r"|=>|\b(const|let)\s+|console\.(log|error|warn|info)\("
+        r"|^\s*(import|export)\b.*\bfrom\s+['\"]",
+        code,
+        re.M,
+    ):
+        return "ts"
+    if re.search(
+        r"^\s*package\s+\w+|^\s*func\s+[A-Za-z_]\w*\(|\bfmt\.|\bgo\s+func\b",
+        code,
+        re.M,
+    ):
+        return "go"
+    if re.search(
+        r"^\s*#include\s*[<\"]|^\s*#define\b|\bint\s+main\s*\(|\bprintf\s*\("
+        r"|\b(malloc|calloc|realloc|free)\s*\(|\bsizeof\b",
+        code,
+        re.M,
+    ):
+        return "c"
+    return "txt"
+
+
+def lesson_file(uuid: str) -> pathlib.Path | None:
+    """Return the existing code.* path for a lesson, if any."""
+    directory = ROOT / uuid
+    if not directory.is_dir():
+        return None
+    files = sorted(directory.glob("code.*"))
+    return files[0] if files else None
+
+
+def write_lesson(uuid: str, code: str) -> pathlib.Path:
+    directory = ROOT / uuid
+    directory.mkdir(parents=True, exist_ok=True)
+    path = lesson_file(uuid)
+    if path is None:
+        path = directory / f"code.{detect_ext(code)}"
+    path.write_text(code, encoding="utf-8")
+    return path
+
+
+def nvim_alive() -> bool:
+    if not os.path.exists(NVIM_SOCK):
+        return False
+    try:
+        result = subprocess.run(
+            [NVIM, "--server", NVIM_SOCK, "--remote-expr", "1"],
+            stdout=subprocess.DEVNULL,
+            stderr=subprocess.DEVNULL,
+            timeout=2,
+        )
+        return result.returncode == 0
+    except subprocess.TimeoutExpired:
+        # The socket exists and nvim is busy; do not treat that as a dead server.
+        return True
+    except OSError:
+        return False
+
+
+def open_in_nvim(path: pathlib.Path) -> None:
+    if not OPEN_NVIM:
+        return
+
+    if nvim_alive():
+        try:
+            subprocess.run(
+                [NVIM, "--server", NVIM_SOCK, "--remote", str(path)],
+                stdout=subprocess.DEVNULL,
+                stderr=subprocess.DEVNULL,
+                timeout=5,
+            )
+        except (OSError, subprocess.TimeoutExpired):
+            pass
+        return
+
+    try:
+        os.unlink(NVIM_SOCK)
+    except FileNotFoundError:
+        pass
+
+    subprocess.Popen(
+        [KITTY, "-e", NVIM, "--listen", NVIM_SOCK, str(path)],
+        stdout=subprocess.DEVNULL,
+        stderr=subprocess.DEVNULL,
+        start_new_session=True,
+    )
+
+
+def notify(uuid: str, rev: int, code: str) -> None:
+    with LOCK:
+        state = STATE.get(uuid)
+        subscribers = list(state["subs"]) if state else []
+    for subscriber in subscribers:
+        subscriber.put({"rev": rev, "code": code})
+
+
+def set_code(uuid: str, code: str) -> int:
+    with LOCK:
+        state = STATE.setdefault(uuid, {"rev": 0, "code": "", "subs": []})
+        state["rev"] += 1
+        state["code"] = code
+        return state["rev"]
+
+
+class Handler(http.server.BaseHTTPRequestHandler):
+    protocol_version = "HTTP/1.1"
+
+    def log_message(self, fmt, *args):
+        pass
+
+    # -- helpers ---------------------------------------------------------
+
+    def _origin_ok(self) -> bool:
+        return origin_allowed(self.headers.get("Origin"))
+
+    def _cors(self) -> None:
+        origin = self.headers.get("Origin")
+        if origin_allowed(origin) and origin is not None:
+            self.send_header("Access-Control-Allow-Origin", origin)
+            self.send_header("Vary", "Origin")
+        self.send_header("Access-Control-Allow-Methods", "GET, POST, OPTIONS")
+        self.send_header("Access-Control-Allow-Headers", "Content-Type")
+
+    def _json(self, obj, status: int = 200) -> None:
+        body = json.dumps(obj).encode()
+        self.send_response(status)
+        self._cors()
+        self.send_header("Content-Type", "application/json")
+        self.send_header("Content-Length", str(len(body)))
+        self.end_headers()
+        self.wfile.write(body)
+
+    def _body(self) -> str:
+        length = int(self.headers.get("Content-Length", 0))
+        return self.rfile.read(length).decode("utf-8")
+
+    def _uuid(self, query: str) -> str:
+        return urllib.parse.parse_qs(query).get("uuid", [""])[0]
+
+    # -- verbs -----------------------------------------------------------
+
+    def do_OPTIONS(self):
+        self.send_response(204)
+        self._cors()
+        self.send_header("Content-Length", "0")
+        self.end_headers()
+
+    def do_GET(self):
+        parsed = urllib.parse.urlparse(self.path)
+        if not self._origin_ok():
+            return self._json({"error": "forbidden"}, 403)
+        uuid = self._uuid(parsed.query)
+        if not uuid:
+            return self._json({"error": "missing uuid"}, 400)
+        if not UUID_RE.fullmatch(uuid):
+            return self._json({"error": "invalid uuid"}, 400)
+        if parsed.path == "/events":
+            return self._events(uuid)
+        return self._json({"error": "not found"}, 404)
+
+    def do_POST(self):
+        parsed = urllib.parse.urlparse(self.path)
+        # Consume the body even on early errors, otherwise the leftover bytes
+        # are parsed as the next request on a keep-alive connection.
+        code = self._body()
+        if not self._origin_ok():
+            return self._json({"error": "forbidden"}, 403)
+        uuid = self._uuid(parsed.query)
+        if not uuid:
+            return self._json({"error": "missing uuid"}, 400)
+        if not UUID_RE.fullmatch(uuid):
+            return self._json({"error": "invalid uuid"}, 400)
+        if parsed.path == "/push":
+            rev = set_code(uuid, code)
+            notify(uuid, rev, code)
+            return self._json({"rev": rev})
+        if parsed.path == "/pull":
+            path = write_lesson(uuid, code)
+            rev = set_code(uuid, code)
+            notify(uuid, rev, code)
+            open_in_nvim(path)
+            return self._json({"path": str(path), "rev": rev})
+        return self._json({"error": "not found"}, 404)
+
+    # -- endpoints -------------------------------------------------------
+
+    def _events(self, uuid: str) -> None:
+        subscriber: queue.Queue = queue.Queue()
+        with LOCK:
+            state = STATE.setdefault(uuid, {"rev": 0, "code": "", "subs": []})
+            state["subs"].append(subscriber)
+
+        self.send_response(200)
+        self._cors()
+        self.send_header("Content-Type", "text/event-stream")
+        self.send_header("Cache-Control", "no-cache")
+        self.send_header("Connection", "keep-alive")
+        self.end_headers()
+
+        try:
+            while True:
+                try:
+                    item = subscriber.get(timeout=20)
+                    payload = f"data: {json.dumps(item)}\n\n"
+                except queue.Empty:
+                    payload = ": keepalive\n\n"
+                self.wfile.write(payload.encode())
+                self.wfile.flush()
+        except (BrokenPipeError, ConnectionResetError, OSError):
+            pass
+        finally:
+            with LOCK:
+                state = STATE.get(uuid)
+                if state is not None and subscriber in state["subs"]:
+                    state["subs"].remove(subscriber)
+
+
+def main() -> None:
+    ROOT.mkdir(parents=True, exist_ok=True)
+    server = http.server.ThreadingHTTPServer((HOST, PORT), Handler)
+    print(
+        f"bootdev-sync listening on http://{HOST}:{PORT} (lessons: {ROOT})",
+        flush=True,
+    )
+    try:
+        server.serve_forever()
+    except KeyboardInterrupt:
+        pass
+    finally:
+        server.server_close()
+
+
+if __name__ == "__main__":
+    main()
